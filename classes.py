@@ -1,44 +1,60 @@
 class Project:
 
-    weights = 4
+    weights = 5
 
-    def __init__(self, name, major=0, seniority=0, leader=0, leaderApp=0, spots=0):
+    def __init__(self, name, grade, prevExp, prevLeader, leaderApp, major, spots):
         self.name = name
-        self.major = major
-        self.seniority = seniority
-        self.leader = leader
+        self.grade = grade
+        self.prevExp = prevExp
+        self.prevLeader = prevLeader
         self.leaderApp = leaderApp
+        self.major = major
         self.spots = spots
         self.assigned = []
 
     # W = SUM( w * x ) / n -- weighted average
-    def calcWeight(person):
-        s = person.major * major + person.seniority * seniority + person.leader * leader + person.leaderApp * leaderApp
-        return s / weights
+    def calcWeight(self, person):
+        s = self.grade * person.grade + self.prevExp * person.prevExp + self.prevLeader * person.prevLeader + self.leaderApp * person.leaderApp + self.major * person.major
 
-    def getMinWeight():
-        minW = 100000
-        minP = 0
-        for i in range(0, len(assigned)):
-            weight = calcWeight(p)
-            if weight < minW:
-                minW = weight
-                minP = i
+        return s / self.weights
 
-        return (minW, i)
+    def getLowest(self):
+        # weight, index
+        low = (self.calcWeight(self.assigned[0]), 0)
 
-    def isEmptySlot():
-        if len(assigned) < spots:
+        for i in range(1, len(self.assigned)):
+            w = self.calcWeight(self.assigned[i])
+            if w < low[0]:
+                low = (w, i)
+
+        return low
+
+    def isEmptySlot(self):
+        if len(self.assigned) < self.spots:
             return True
         return False
 
+    def printMatches(self):
+        print(self.name)
+        for p in self.assigned:
+            print("(%s, %s)  " % (p.name, self.calcWeight(p)))
+        print()
 
+    def __str__(self):
+        s = "%s, %s, %s, %s, %s, %s, %s, %s" % (self.name, self.grade, self.prevExp, self.prevLeader, self.leaderApp, self.major, self.spots, self.assigned)
+        return s
 
 class Person:
-    def __init__(self, name, major, seniority, leader, leaderApp):
+    def __init__(self, name, email, grade, prevExp, prevLeader, leaderApp, major, choices):
         self.name = name
-        self.major = major
-        self.seniority = seniority
-        self.leader = leader
+        self.email = email
+        self.grade = grade
+        self.prevExp = prevExp
+        self.prevLeader = prevLeader
         self.leaderApp = leaderApp
+        self.major = major
         self.choices = choices
+
+    def __str__(self):
+        s = "%s, %s, %s, %s, %s, %s, %s, %s" % (self.name, self.email, self.grade, self.prevExp, self.prevLeader, self.leaderApp, self.major, self.choices)
+        return s
